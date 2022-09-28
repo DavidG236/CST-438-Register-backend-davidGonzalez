@@ -2,6 +2,7 @@ package com.cst438.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
@@ -114,6 +116,31 @@ public class ScheduleController {
 		} else {
 			// something is not right with the enrollment.  
 			throw  new ResponseStatusException( HttpStatus.BAD_REQUEST, "Enrollment_id invalid. "+enrollment_id);
+		}
+	}
+	
+	//ADDS A HOLD----------------------------------------------------
+	@PutMapping("/student/{id}")  //  /student/3?status=2 <what THEY need to type
+	public void addHold(@PathVariable int id, @RequestParam("status") int code) {
+		//pathvariable is what element they're searching for
+		//requestparam is what they are changing
+		Student student = studentRepository.findById(id).orElse(null);
+		
+		if (student != null) {
+			student.setStatusCode(code);
+			studentRepository.save(student);
+		}
+	}
+	
+	//REMOVES A HOLD--------------------------------------------------
+	@PutMapping("/student/{id}")
+	public void removeHold(@PathVariable int id) {
+		
+		Student student = studentRepository.findById(id).orElse(null);
+		
+		if(student!=null) {
+			student.setStatusCode(0);
+			studentRepository.save(student);
 		}
 	}
 	
